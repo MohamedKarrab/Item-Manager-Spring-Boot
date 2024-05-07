@@ -119,7 +119,8 @@
     <br><br><a href="/" class="button-custom">Home</a>
 </div>
 <script >
-    document.addEventListener('DOMContentLoaded', function () {
+    // document.addEventListener('DOMContentLoaded', function () {
+    function fetchItems(){
         const baseUrl = '/api/v1/items';
         const itemsListDiv = document.getElementById('itemsList');
         const token = localStorage.getItem('jwt');
@@ -136,9 +137,9 @@
                 }
             })
             .then(items => {
-                let content = `<table border="1"><tr><th>Name</th><th>Description</th><th>Price</th><th>Category ID</th></tr>`;
+                let content = `<table border="1"><tr><th>ID</th><th>Name</th><th>Description</th><th>Price</th><th>Category ID</th></tr>`;
                 items.forEach(item => {
-                    content += `<tr><td>${item.name}</td><td>${item.description}</td><td>${item.price}</td><td>${item.categoryId}</td></tr>`;
+                    content += `<tr><td>${item.id}</td><td>${item.name}</td><td>${item.description}</td><td>${item.price}</td><td>${item.categoryId}</td></tr>`;
                 });
                 content += `</table>`;
                 itemsListDiv.innerHTML = content;
@@ -147,11 +148,10 @@
                 console.error('Error fetching items:', error);
                 itemsListDiv.innerHTML = `<p>Error loading items.</p>`;
             });
-    });
-</script>
+    };
 
+    fetchItems()
 
-<script>
     // Function to get JWT token from localStorage
     function getToken() {
         return localStorage.getItem('jwt');
@@ -178,8 +178,8 @@
             body: JSON.stringify(formData)
         }).then(response => {
             if(response.ok) {
+                fetchItems();
                 alert('Item added successfully');
-                return response.json();
             } else {
                 throw new Error('Failed to add item');
             }
@@ -207,6 +207,7 @@
         }).then(response => {
             if(response.ok) {
                 alert('Item updated successfully');
+                fetchItems();
                 return response.json();
             } else {
                 throw new Error('Failed to update item');
@@ -223,12 +224,16 @@
             console.error('Item ID is missing');
             return;
         }
+
         fetchWithToken(`/api/v1/items/${encodeURIComponent(itemId)}`, {
             method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
         }).then(response => {
             if(response.ok) {
+                fetchItems();
                 alert('Item deleted successfully');
-                return response.json();
             } else {
                 throw new Error('Failed to delete item');
             }

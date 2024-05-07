@@ -79,8 +79,9 @@
         }
     </style>
 </head>
+<body>
 <h2>Categories List</h2>
-<div id="categoriesList">
+<div id="categoriesList"></div>
 <div class="container">
     <h2>Add Category</h2>
     <form id="addCategoryForm">
@@ -102,7 +103,7 @@
         <input type="text" id="update-name" name="name"><br><br>
         <button type="submit">Update Category</button>
     </form>
-</div>
+    <br><br><a href="/" class="button-custom">Home</a>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -136,7 +137,11 @@
 
         // Function to fetch categories
         function fetchCategories() {
-            fetch(baseUrl)
+            fetch(baseUrl, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+                }
+            })
                 .then(response => {
                     if (response.ok) {
                         return response.json();
@@ -154,7 +159,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching categories:', error);
-                    // categoriesListDiv.innerHTML = `<p>Error loading categories.</p>`;
+                    categoriesListDiv.innerHTML = `<p>Error loading categories.</p>`;
                 });
         }
 
@@ -163,36 +168,44 @@
             fetch(baseUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('jwt')}`
                 },
                 body: JSON.stringify({ name: categoryName })
             })
                 .then(response => {
                     if (response.ok) {
                         fetchCategories();
+                        alert('Category added successfully!');
                     } else {
                         throw new Error('Failed to add category');
                     }
                 })
                 .catch(error => {
                     console.error('Error adding category:', error);
+                    alert('Failed to add category!');
                 });
         }
 
         // Function to delete a category
         function deleteCategory(categoryId) {
             fetch(`${baseUrl}/${categoryId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+                }
             })
                 .then(response => {
                     if (response.ok) {
                         fetchCategories();
+                        alert('Category deleted successfully!');
                     } else {
                         throw new Error('Failed to delete category');
                     }
                 })
                 .catch(error => {
                     console.error('Error deleting category:', error);
+                    alert('Failed to delete category!');
                 });
         }
 
@@ -201,19 +214,22 @@
             fetch(`${baseUrl}/${categoryId}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('jwt')}`
                 },
-                body: JSON.stringify({ name: categoryName })
+                body: JSON.stringify({ id: categoryId, name: categoryName })
             })
                 .then(response => {
                     if (response.ok) {
                         fetchCategories();
+                        alert('Category updated successfully!');
                     } else {
                         throw new Error('Failed to update category');
                     }
                 })
                 .catch(error => {
                     console.error('Error updating category:', error);
+                    alert('Failed to update category!');
                 });
         }
     });
