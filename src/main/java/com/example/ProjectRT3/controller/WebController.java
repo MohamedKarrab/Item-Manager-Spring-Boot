@@ -17,6 +17,13 @@ public class WebController {
         return "index";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @GetMapping("/signup")
+    public String signup(){ return "signup"; }
     @GetMapping("/manageItems")
     public String manageItems() {
         return "manage_items"; // Assume you have a manage_items.html in your static or template directory

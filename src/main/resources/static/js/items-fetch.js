@@ -2,8 +2,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const baseUrl = '/api/v1/items';
     const itemsListDiv = document.getElementById('itemsList');
 
-    fetch(baseUrl)
-        .then(response => response.json())
+    const token = localStorage.getItem('jwt');
+    console.log("token: ", token)
+    fetch(baseUrl, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Failed to fetch items');
+            }
+        })
         .then(items => {
             let content = `<table border="1"><tr><th>Name</th><th>Description</th><th>Price</th><th>Category ID</th></tr>`;
             items.forEach(item => {

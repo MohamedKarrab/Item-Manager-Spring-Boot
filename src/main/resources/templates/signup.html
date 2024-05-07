@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup</title>
+</head>
+<body>
+<h2>Signup</h2>
+<form id="signupForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br><br>
+    <button type="submit">Signup</button>
+</form>
+
+<script>
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+        var email = document.getElementById('email').value;
+
+        fetch('/api/v1/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: username, password: password, email: email })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw response; // Handle error based on response status
+                }
+                return response.json(); // Parse JSON only when response is ok
+            })
+            .then(data => {
+                console.log('Success:', data);
+                alert('Signup successful! Please login.');
+                window.location.href = '/login'; // Redirect to login page after successful signup
+            })
+            .catch(error => {
+                error.json().then(errorMessage => {
+                    console.error('Error:', errorMessage);
+                    alert(errorMessage.message || 'Failed to signup');
+                }).catch(() => {
+                    alert('Failed to signup, please try again later.');
+                });
+            });
+    });
+</script>
+</body>
+</html>
