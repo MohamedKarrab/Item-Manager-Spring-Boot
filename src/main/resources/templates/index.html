@@ -3,16 +3,72 @@
 <head>
     <meta charset="ISO-8859-1">
     <title>Index</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        #itemsList {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        a:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-<h2>Items List</h2>
-<div id="itemsList"></div>
-<script src="../static/js/items-fetch.js"></script>
-
 <h1>Welcome to the Item Management System</h1>
 <a href="/manageItems">Manage Items</a><br>
 <a href="/manageCategories">Manage Categories</a><br>
 <a href="/login">Login</a><br>
 <a href="/signup">Signup</a><br>
+<a href="#" id="logout">Logout</a><br>
+
+<script>
+    // Add event listener for logout link
+    document.getElementById('logout').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default behavior of anchor tag
+        logout(); // Call logout function
+    });
+
+    // Logout function
+    function logout() {
+        fetch('/logout', { // Replace '/logout' with the actual logout endpoint URL
+            method: 'POST' // Logout typically uses POST method
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Redirect to login page after successful logout
+                    window.location.href = '/login';
+                } else {
+                    console.error('Logout failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error during logout:', error);
+            });
+    }
+</script>
 </body>
 </html>
